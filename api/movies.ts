@@ -6,17 +6,23 @@ import { Movie, Person } from "../model/model";
 export const router = express.Router();
 
 router.get("/", (req, res) => {
-  let sql = "SELECT * FROM Movies";
+  let sql
+  if (req.query.name) {
+    sql = `SELECT * FROM Movies WHERE Title LIKE '%${req.query.name}%'`;
+  } else {
+    sql = "SELECT * FROM Movies";
+  }  
 
   let dataP: Person[] = [];
   let dataC: Person[] = [];
 
-  conn.query(sql, (err, Result_Movie) => {
+  conn.query(sql!, (err, Result_Movie) => {
     if (err) {
       console.error("Error querying Creators:", err);
       return;
     }
-
+    console.log(Result_Movie);
+    
     sql =
       "SELECT Person.name AS creators_name FROM Movies JOIN Creators ON Movies.mid = Creators.mid JOIN Person ON Creators.uid = Person.uid";
 
@@ -38,7 +44,7 @@ router.get("/", (req, res) => {
 
         dataP = Result_Stars;
 
-        const format = Result_Movie.map((format: { Mid: any; Title: any; type: string; year: any; runtime: any; Genre: any; rating : any ;creator_name: any; deatil: any; poster: any;}) => {
+        const format = Result_Movie.map((format: { Mid: any; Title: any; type: string; year: any; runtime: any; Genre: any; rating : any ;creator_name: any; detail: any; poster: any;}) => {
             const stars = dataP.map((star: any) => star.star_name);
             const Creators = dataC.map((crator : any) => crator.creators_name)
 
@@ -52,7 +58,7 @@ router.get("/", (req, res) => {
               Rating: format.rating,
               Creators: Creators,
               Stars: stars,
-              detail: format.deatil,
+              detail: format.detail,
               poster: format.poster,
             };
           }
