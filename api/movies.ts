@@ -84,10 +84,11 @@ router.post("/Insert", (req, res) => {
 
     if (result == 0) {
       sql =
-        "INSERT INTO Movies (`Title`, `year`, `runtime`, `Genre`, `detail`, `poster`) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO Movies (`Title`, `type`, `year`, `runtime`, `Genre`, `detail`, `poster`) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
       sql = mysql.format(sql, [
         body.Title,
+        body.type,
         body.year,
         body.runtime,
         body.Genre,
